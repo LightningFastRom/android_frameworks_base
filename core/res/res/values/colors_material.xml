@@ -53,7 +53,7 @@
     <eat-comment />
 
     <!-- 87% black -->
-    <color name="primary_text_default_material_light">#de000000</color>
+    <color name="primary_text_default_material_light">#01579b</color>
     <!-- 54% black -->
     <color name="secondary_text_default_material_light">#8a000000</color>
 
@@ -85,14 +85,14 @@
     <color name="material_grey_300">#ffe0e0e0</color>
     <color name="material_grey_100">#fff5f5f5</color>
     <color name="material_grey_50">#fffafafa</color>
-
-    <color name="material_deep_teal_50">#ffe0f2f1</color>
-    <color name="material_deep_teal_100">#ffb2dfdb</color>
-    <color name="material_deep_teal_200">#ff80cbc4</color>
-    <color name="material_deep_teal_300">#ff4db6ac</color>
-    <color name="material_deep_teal_500">#ff009688</color>
-    <color name="material_deep_teal_700">#ff00796b</color>
-
+	
+	<color name="material_deep_teal_50">#29b6f6</color>
+    <color name="material_deep_teal_100">#03a9f4</color>
+    <color name="material_deep_teal_200">#039be5</color>
+    <color name="material_deep_teal_300">#0288d1</color>
+    <color name="material_deep_teal_500">#0277bd</color>
+    <color name="material_deep_teal_700">#01579b</color>
+	
     <color name="material_blue_grey_200">#ffb0bec5</color>
     <color name="material_blue_grey_700">#ff455a64</color>
     <color name="material_blue_grey_800">#ff37474f</color>
