@@ -40,9 +40,6 @@ public class VisualizerView extends View
     private static final String TAG = VisualizerView.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final String LOCKSCREEN_VISUALIZER_ENABLED =
-            "cmsecure:" + CMSettings.Secure.LOCKSCREEN_VISUALIZER_ENABLED;
-
     private Paint mPaint;
     private Visualizer mVisualizer;
     private ObjectAnimator mVisualizerColorAnimator;
@@ -184,7 +181,6 @@ public class VisualizerView extends View
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        TunerService.get(mContext).addTunable(this, LOCKSCREEN_VISUALIZER_ENABLED);
     }
 
     @Override
@@ -365,10 +361,6 @@ public class VisualizerView extends View
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (!LOCKSCREEN_VISUALIZER_ENABLED.equals(key)) {
-            return;
-        }
-        mVisualizerEnabled = newValue == null || Integer.parseInt(newValue) != 0;
         checkStateChanged();
         updateViewVisibility();
     }
