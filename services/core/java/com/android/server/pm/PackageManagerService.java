@@ -3183,20 +3183,10 @@ public class PackageManagerService extends IPackageManager.Stub
 
             // Disable components marked for disabling at build-time
             mDisabledComponentsList = new ArrayList<ComponentName>();
-            for (String name : mContext.getResources().getStringArray(
-                    com.android.internal.R.array.config_disabledComponents)) {
-                ComponentName cn = ComponentName.unflattenFromString(name);
-                mDisabledComponentsList.add(cn);
-                Slog.v(TAG, "Disabling " + name);
-                String className = cn.getClassName();
-                PackageSetting pkgSetting = mSettings.mPackages.get(cn.getPackageName());
-                if (pkgSetting == null || pkgSetting.pkg == null
-                        || !pkgSetting.pkg.hasComponentClassName(className)) {
-                    Slog.w(TAG, "Unable to disable " + name);
-                    continue;
-                }
-                pkgSetting.disableComponentLPw(className, UserHandle.USER_OWNER);
-            }
+            disableComponents(mContext.getResources().getStringArray(
+                    com.android.internal.R.array.config_deviceDisabledComponents));
+            disableComponents(mContext.getResources().getStringArray(
+                    com.android.internal.R.array.config_globallyDisabledComponents));
 
             // Enable components marked for forced-enable at build-time
             for (String name : mContext.getResources().getStringArray(
@@ -3327,6 +3317,23 @@ public class PackageManagerService extends IPackageManager.Stub
         mInstaller.setWarnIfHeld(mPackages);
 
         Trace.traceEnd(TRACE_TAG_PACKAGE_MANAGER);
+    }
+
+    private void disableComponents(String[] components) {
+        // Disable components marked for disabling at build-time
+        for (String name : components) {
+            ComponentName cn = ComponentName.unflattenFromString(name);
+            mDisabledComponentsList.add(cn);
+            Slog.v(TAG, "Disabling " + name);
+            String className = cn.getClassName();
+            PackageSetting pkgSetting = mSettings.mPackages.get(cn.getPackageName());
+            if (pkgSetting == null || pkgSetting.pkg == null
+                    || !pkgSetting.pkg.hasComponentClassName(className)) {
+                Slog.w(TAG, "Unable to disable " + name);
+                continue;
+            }
+            pkgSetting.disableComponentLPw(className, UserHandle.USER_OWNER);
+        }
     }
 
     /**
@@ -8899,10 +8906,10 @@ public class PackageManagerService extends IPackageManager.Stub
                     + " better than this " + pkg.getLongVersionCode());
         }
 
-        // Verify certificates against what was last scanned. If it is an updated priv app, we will
-        // force re-collecting certificate.
-        final boolean forceCollect = PackageManagerServiceUtils.isApkVerificationForced(
-                disabledPkgSetting);
+        // Verify certificates against what was last scanned. If there was an upgrade or this is an
+        // updated priv app, we will force re-collecting certificate.
+        final boolean forceCollect = mIsUpgrade ||
+                PackageManagerServiceUtils.isApkVerificationForced(disabledPkgSetting);
         // Full APK verification can be skipped during certificate collection, only if the file is
         // in verified partition, or can be verified on access (when apk verity is enabled). In both
         // cases, only data in Signing Block is verified instead of the whole file.
@@ -24660,11 +24667,9 @@ Slog.v(TAG, ":: stepped forward, applying functor at tag " + parser.getName());
         }
         if (mExternalSourcesPolicy != null) {
             int isTrusted = mExternalSourcesPolicy.getPackageTrustedToInstallApps(packageName, uid);
-            if (isTrusted != PackageManagerInternal.ExternalSourcesPolicy.USER_DEFAULT) {
-                return isTrusted == PackageManagerInternal.ExternalSourcesPolicy.USER_TRUSTED;
-            }
+            return isTrusted == PackageManagerInternal.ExternalSourcesPolicy.USER_TRUSTED;
         }
-        return checkUidPermission(appOpPermission, uid) == PERMISSION_GRANTED;
+        return false;
     }
 
     @Override

@@ -171,6 +171,9 @@ public class LocationManagerService extends ILocationManager.Stub {
     private LocationFudger mLocationFudger;
     private GeofenceManager mGeofenceManager;
     private PackageManager mPackageManager;
+    private String mComboNlpPackageName;
+    private String mComboNlpReadyMarker;
+    private String mComboNlpScreenMarker;
     private PowerManager mPowerManager;
     private ActivityManager mActivityManager;
     private UserManager mUserManager;
@@ -709,6 +712,13 @@ public class LocationManagerService extends ILocationManager.Stub {
                 com.android.internal.R.array.config_locationProviderPackageNames);
         if (proxy == null) {
             Slog.d(TAG, "Unable to bind ActivityRecognitionProxy.");
+        }
+
+        mComboNlpPackageName = resources.getString(
+                com.android.internal.R.string.config_comboNetworkLocationProvider);
+        if (mComboNlpPackageName != null) {
+            mComboNlpReadyMarker = mComboNlpPackageName + ".nlp:ready";
+            mComboNlpScreenMarker = mComboNlpPackageName + ".nlp:screen";
         }
 
         String[] testProviderStrings = resources.getStringArray(
@@ -2582,24 +2592,9 @@ public class LocationManagerService extends ILocationManager.Stub {
         long identity = Binder.clearCallingIdentity();
         try {
             synchronized (mLock) {
-                final String allowedProviders = Settings.Secure.getStringForUser(
-                        mContext.getContentResolver(),
-                        Settings.Secure.LOCATION_PROVIDERS_ALLOWED,
-                        userId);
-                if (allowedProviders == null) {
-                    return false;
-                }
-                final List<String> providerList = Arrays.asList(allowedProviders.split(","));
-                for(String provider : mRealProviders.keySet()) {
-                    if (provider.equals(LocationManager.PASSIVE_PROVIDER)
-                            || provider.equals(LocationManager.FUSED_PROVIDER)) {
-                        continue;
-                    }
-                    if (providerList.contains(provider)) {
-                        return true;
-                    }
-                }
-                return false;
+                return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                        Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF, userId)
+                        != Settings.Secure.LOCATION_MODE_OFF;
             }
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -2624,41 +2619,10 @@ public class LocationManagerService extends ILocationManager.Stub {
         long identity = Binder.clearCallingIdentity();
         try {
             synchronized (mLock) {
-                final Set<String> allRealProviders = mRealProviders.keySet();
-                // Update all providers on device plus gps and network provider when disabling
-                // location
-                Set<String> allProvidersSet = new ArraySet<>(allRealProviders.size() + 2);
-                allProvidersSet.addAll(allRealProviders);
-                // When disabling location, disable gps and network provider that could have been
-                // enabled by location mode api.
-                if (enabled == false) {
-                    allProvidersSet.add(LocationManager.GPS_PROVIDER);
-                    allProvidersSet.add(LocationManager.NETWORK_PROVIDER);
-                }
-                if (allProvidersSet.isEmpty()) {
-                    return;
-                }
-                // to ensure thread safety, we write the provider name with a '+' or '-'
-                // and let the SettingsProvider handle it rather than reading and modifying
-                // the list of enabled providers.
-                final String prefix = enabled ? "+" : "-";
-                StringBuilder locationProvidersAllowed = new StringBuilder();
-                for (String provider : allProvidersSet) {
-                    if (provider.equals(LocationManager.PASSIVE_PROVIDER)
-                            || provider.equals(LocationManager.FUSED_PROVIDER)) {
-                        continue;
-                    }
-                    locationProvidersAllowed.append(prefix);
-                    locationProvidersAllowed.append(provider);
-                    locationProvidersAllowed.append(",");
-                }
-                // Remove the trailing comma
-                locationProvidersAllowed.setLength(locationProvidersAllowed.length() - 1);
-                Settings.Secure.putStringForUser(
-                        mContext.getContentResolver(),
-                        Settings.Secure.LOCATION_PROVIDERS_ALLOWED,
-                        locationProvidersAllowed.toString(),
-                        userId);
+                int locationMode = enabled ? Settings.Secure.LOCATION_MODE_HIGH_ACCURACY
+                        : Settings.Secure.LOCATION_MODE_OFF;
+                Settings.Secure.putIntForUser(mContext.getContentResolver(),
+                        Settings.Secure.LOCATION_MODE, locationMode, userId);
             }
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -3076,6 +3040,71 @@ public class LocationManagerService extends ILocationManager.Stub {
         synchronized (mLock) {
             return mMockProviders.containsKey(provider);
         }
+
+    }
+
+    private Location screenLocationLocked(Location location, String provider) {
+        if (isMockProvider(LocationManager.NETWORK_PROVIDER)) {
+            return location;
+        }
+        LocationProviderProxy providerProxy =
+                (LocationProviderProxy) mProvidersByName.get(LocationManager.NETWORK_PROVIDER);
+        if (mComboNlpPackageName == null || providerProxy == null ||
+                !provider.equals(LocationManager.NETWORK_PROVIDER) ||
+                isMockProvider(LocationManager.NETWORK_PROVIDER)) {
+            return location;
+        }
+
+        String connectedNlpPackage = providerProxy.getConnectedPackageName();
+        if (connectedNlpPackage == null || !connectedNlpPackage.equals(mComboNlpPackageName)) {
+            return location;
+        }
+
+        Bundle extras = location.getExtras();
+        boolean isBeingScreened = false;
+
+        if (extras == null || !extras.containsKey(mComboNlpReadyMarker)) {
+            // see if Combo Nlp is a passive listener
+            ArrayList<UpdateRecord> records =
+                    mRecordsByProvider.get(LocationManager.PASSIVE_PROVIDER);
+            if (records != null) {
+                for (UpdateRecord r : records) {
+                    if (r.mReceiver.mIdentity.mPackageName.equals(mComboNlpPackageName)) {
+                        if (!isBeingScreened) {
+                            isBeingScreened = true;
+                            if (extras == null) {
+                                location.setExtras(new Bundle());
+                                extras = location.getExtras();
+                            }
+                            extras.putBoolean(mComboNlpScreenMarker, true);
+                        }
+                        // send location to Combo Nlp for screening
+                        if (!r.mReceiver.callLocationChangedLocked(location)) {
+                            Slog.w(TAG, "RemoteException calling onLocationChanged on "
+                                   + r.mReceiver);
+                        } else {
+                            if (D) {
+                                Log.d(TAG, "Sending location for screening");
+                            }
+                        }
+                    }
+                }
+            }
+            if (isBeingScreened) {
+                return null;
+            }
+            if (D) {
+                Log.d(TAG, "Not screening locations");
+            }
+        } else {
+            if (D) {
+                Log.d(TAG, "This location is marked as ready for broadcast");
+            }
+            // clear the ready marker
+            extras.remove(mComboNlpReadyMarker);
+        }
+
+        return location;
     }
 
     private void handleLocationChanged(Location location, boolean passive) {
@@ -3094,6 +3123,10 @@ public class LocationManagerService extends ILocationManager.Stub {
         synchronized (mLock) {
             if (isAllowedByCurrentUserSettingsLocked(provider)) {
                 if (!passive) {
+                    location = screenLocationLocked(location, provider);
+                    if (location == null) {
+                        return;
+                    }
                     // notify passive provider of the new location
                     mPassiveProvider.updateLocation(myLocation);
                 }
