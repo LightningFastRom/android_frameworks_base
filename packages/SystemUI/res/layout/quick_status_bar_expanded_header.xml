@@ -76,12 +76,12 @@
         android:textStyle="bold"
         android:visibility="invisible"/>
     
-    <!-- Quick QS brightness bar -->
-    <include layout="@layout/quick_settings_brightness_dialog"
+    <FrameLayout
         android:id="@+id/quick_qs_brightness_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/brightness_mirror_height"
-        android:layout_below="@id/header_text_container"
-        android:visibility="gone" />
+        android:layout_below="@id/header_text_container">
+        <include layout="@layout/quick_settings_brightness_dialog" />
+    </FrameLayout>
     
 </com.android.systemui.qs.QuickStatusBarHeader>
