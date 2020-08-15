@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2020 shagbag913
+    Copyright (c) 2019 Havoc-OS
+    Copyright (C) 2020 ProjectFluid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,4 +21,5 @@
     <!-- Alerting notification header label -->
     <string name="notification_section_header_alerting">Alerting notifications</string>
 
+    <string name="clock_title_fluid" translatable="false">Fluid</string>
 </resources>
