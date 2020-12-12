@@ -463,7 +463,7 @@
          (Toolbar_minWidth (56dp) + qs_tile_margin_top_bottom (12dp))
     -->
     <dimen name="qs_customize_header_min_height">46dp</dimen>
-    <dimen name="qs_tile_margin_top">32dp</dimen>
+    <dimen name="qs_tile_margin_top">18dp</dimen>
     <dimen name="qs_tile_background_size">44dp</dimen>
     <dimen name="qs_quick_tile_size">48dp</dimen>
     <dimen name="qs_quick_tile_padding">12dp</dimen>

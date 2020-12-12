@@ -18,6 +18,6 @@
 <resources>
     <!-- Standard notification width + gravity for tablet large screen device -->
     <dimen name="notification_panel_width">544dp</dimen>
-	
+
 </resources>
 
