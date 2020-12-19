@@ -26,6 +26,5 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:clipChildren="false"
-		android:visibility="gone"/>
+        android:clipChildren="false"/>
 </com.android.keyguard.AlphaOptimizedLinearLayout>
