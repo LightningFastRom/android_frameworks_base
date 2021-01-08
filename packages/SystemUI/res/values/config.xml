@@ -386,7 +386,7 @@
 
     <!-- Whether or not an expandable notification can be manually expanded or collapsed by the
          user. Grouped notifications are still expandable even if this value is false. -->
-    <bool name="config_enableNonGroupedNotificationExpand">true</bool>
+    <bool name="config_enableNonGroupedNotificationExpand">false</bool>
 
     <!-- Whether or not there should be dividing lines between child notifications when the
          group has been expanded. -->
