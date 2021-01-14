@@ -48,12 +48,34 @@
         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
         systemui:showDark="false" />
     </LinearLayout>
+	
+	<android.widget.Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+	
+	<LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center" >
+
+	<org.lineageos.internal.statusbar.NetworkTraffic	
+        android:id="@+id/network_traffic"	
+        android:layout_width="wrap_content"	
+        android:layout_height="match_parent"	
+        android:maxLines="2"	
+        android:gravity="center" />
+    </LinearLayout>
 
     <android.widget.Space
         android:id="@+id/space"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <LinearLayout
