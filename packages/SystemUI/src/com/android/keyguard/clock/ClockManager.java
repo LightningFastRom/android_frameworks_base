@@ -163,6 +163,8 @@ public final class ClockManager {
         addBuiltinClock(() -> new MNMLBoxClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLMinimalClockController(res, layoutInflater, colorExtractor));
 		addBuiltinClock(() -> new LightningClockController(res, layoutInflater, colorExtractor));
+	     addBuiltinClock(() -> new TypeClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new TypeClockAltController(res, layoutInflater, colorExtractor));
 		// Analog Clocks
 		addBuiltinClock(() -> new SpideyClockController(res, layoutInflater, colorExtractor));
 		addBuiltinClock(() -> new CustomNumClockController(res, layoutInflater, colorExtractor));
