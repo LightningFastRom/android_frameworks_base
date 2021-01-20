@@ -53,7 +53,7 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            ndroid:layout_gravity="center"
+            android:layout_gravity="center"
             android:layout_centerInParent="true"
             android:orientation="horizontal">
 
