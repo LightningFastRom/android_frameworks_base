@@ -13,9 +13,80 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
- 	<solid android:color="@color/white"/>
-   	<stroke android:width="4dp" android:color="#fff" />
-   	<size android:width="20dp" android:height="20dp"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- Drop Shadow -->
+	<item>
+		<shape android:shape="oval">
+			<padding
+				android:bottom="1dp"
+				android:left="1dp"
+				android:right="1dp"
+				android:top="1dp" />
+	
+			<solid android:color="#00CCCCCC" />
+	
+			<corners android:radius="3dp" />
+		</shape>
+	</item>
+	<item>
+		<shape android:shape="oval">
+			<padding
+				android:bottom="1dp"
+				android:left="1dp"
+				android:right="1dp"
+				android:top="1dp" />
+	
+			<solid android:color="#10CCCCCC" />
+	
+			<corners android:radius="3dp" />
+		</shape>
+	</item>
+	<item>
+		<shape android:shape="oval">
+			<padding
+				android:bottom="1dp"
+				android:left="1dp"
+				android:right="1dp"
+				android:top="1dp" />
+	
+			<solid android:color="#20CCCCCC" />
+	
+			<corners android:radius="3dp" />
+		</shape>
+	</item>
+	<item>
+		<shape android:shape="oval">
+			<padding
+				android:bottom="1dp"
+				android:left="1dp"
+				android:right="1dp"
+				android:top="1dp" />
+	
+			<solid android:color="#30CCCCCC" />
+	
+			<corners android:radius="3dp" />
+		</shape>
+	</item>
+	<item>
+		<shape android:shape="oval">
+			<padding
+				android:bottom="1dp"
+				android:left="1dp"
+				android:right="1dp"
+				android:top="1dp" />
+	
+			<solid android:color="#50CCCCCC" />
+	
+			<corners android:radius="3dp" />
+		</shape>
+	</item>
+
+	<!-- Background Color (white) -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/white"/>
+   	        <stroke android:width="4dp" android:color="#fff" />
+   	        <size android:width="20dp" android:height="20dp"/>
+        </shape>
+    </item>
+</layer-list>
