@@ -82,6 +82,7 @@ public class TileQueryHelper {
 
     private void addCurrentAndStockTiles(QSTileHost host) {
         String stock = mContext.getString(R.string.quick_settings_tiles_stock);
+		String extra = mContext.getString(R.string.quick_settings_tiles_extra);
         String current = Settings.Secure.getString(mContext.getContentResolver(),
                 Settings.Secure.QS_TILES);
         final ArrayList<String> possibleTiles = new ArrayList<>();
@@ -92,7 +93,14 @@ public class TileQueryHelper {
             current = "";
         }
         String[] stockSplit =  stock.split(",");
-        for (String spec : stockSplit) {
+		for (String spec : stockSplit) {
+            if (!current.contains(spec)) {
+                possibleTiles.add(spec);
+            }
+        }
+		
+		String[] extraSplit =  extra.split(",");
+        for (String spec : extraSplit) {
             if (!current.contains(spec)) {
                 possibleTiles.add(spec);
             }
@@ -139,6 +147,7 @@ public class TileQueryHelper {
             List<ResolveInfo> services = pm.queryIntentServicesAsUser(
                     new Intent(TileService.ACTION_QS_TILE), 0, ActivityManager.getCurrentUser());
             String stockTiles = mContext.getString(R.string.quick_settings_tiles_stock);
+			String extraTiles = mContext.getString(R.string.quick_settings_tiles_extra);
 
             for (ResolveInfo info : services) {
                 String packageName = info.serviceInfo.packageName;
@@ -146,6 +155,11 @@ public class TileQueryHelper {
 
                 // Don't include apps that are a part of the default tile set.
                 if (stockTiles.contains(componentName.flattenToString())) {
+                    continue;
+                }
+                
+				// Don't include apps that are a part of the default tile set.
+                if (extraTiles.contains(componentName.flattenToString())) {
                     continue;
                 }
 

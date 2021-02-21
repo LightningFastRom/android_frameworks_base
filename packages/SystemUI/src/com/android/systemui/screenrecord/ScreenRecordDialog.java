@@ -25,7 +25,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.systemui.R;
@@ -49,8 +49,8 @@ public class ScreenRecordDialog extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen_record_dialog);
 
-        final CheckBox micCheckBox = findViewById(R.id.checkbox_mic);
-        final CheckBox tapsCheckBox = findViewById(R.id.checkbox_taps);
+        final Switch micCheckBox = findViewById(R.id.Switch_mic);
+        final Switch tapsCheckBox = findViewById(R.id.switch_taps);
 
         final Button recordButton = findViewById(R.id.record_button);
         recordButton.setOnClickListener(v -> {
@@ -66,6 +66,11 @@ public class ScreenRecordDialog extends Activity {
             } else {
                 requestScreenCapture();
             }
+        });
+		
+		final Button cancelButton = findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(v -> {
+              ScreenRecordDialog.this.finish();
         });
     }
 

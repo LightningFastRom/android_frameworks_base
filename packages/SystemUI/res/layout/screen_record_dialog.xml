@@ -13,24 +13,127 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <CheckBox
-            android:id="@+id/checkbox_mic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/screenrecord_mic_label"/>
-        <CheckBox
-            android:id="@+id/checkbox_taps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/screenrecord_taps_label"/>
-        <Button
-            android:id="@+id/record_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/screenrecord_start_label"
-        />
+        
+	    <!-- Show mic in screen -->
+		<FrameLayout
+			android:id="@+id/show_mic_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp"
+			android:paddingStart="?android:attr/dialogPreferredPadding"
+			android:paddingEnd="?android:attr/dialogPreferredPadding">
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="50dp"
+				android:layout_marginTop="10dp"
+				android:layout_marginEnd="50dp"
+				android:layout_marginBottom="12dp">
+
+				<TextView
+					android:id="@android:id/title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					android:textStyle="bold"
+					android:textColor="?android:attr/textColorSecondary"
+					android:text="@string/screenrecord_mic_label" />
+
+			</RelativeLayout>
+
+			<ImageView
+				android:id="@+id/record_audio_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center|start"
+				android:src="@drawable/ic_screenrecord_audio" />
+
+			<Switch
+				android:id="@+id/Switch_mic"
+				android:layout_width="wrap_content"
+				android:layout_height="48dp"
+				android:layout_gravity="top|end" />
+
+		</FrameLayout>
+		
+        <!-- Show taps in screen -->
+		<FrameLayout
+			android:id="@+id/show_taps_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp"
+			android:paddingStart="?android:attr/dialogPreferredPadding"
+			android:paddingEnd="?android:attr/dialogPreferredPadding">
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="50dp"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="12dp">
+
+				<TextView
+					android:id="@android:id/title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					android:textStyle="bold"
+					android:textColor="?android:attr/textColorSecondary"
+					android:text="@string/screenrecord_taps_label" />
+
+			</RelativeLayout>
+
+			<ImageView
+				android:id="@+id/show_taps_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center|start"
+				android:src="@drawable/ic_screenrecord_show_taps" />
+
+			<Switch
+				android:id="@+id/switch_taps"
+				android:layout_width="wrap_content"
+				android:layout_height="48dp"
+				android:layout_gravity="top|end" />
+
+		</FrameLayout>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginBottom="8dp"
+			android:background="#e3e3e3"/>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingStart="?android:attr/dialogPreferredPadding"
+			android:paddingEnd="?android:attr/dialogPreferredPadding"
+			android:paddingBottom="8dp">
+
+			<Button
+				android:id="@+id/cancel_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/screenrecord_cancel_label"
+				android:textAllCaps="false"
+				style="@*android:style/Widget.DeviceDefault.Button.Borderless.Colored" />
+
+			<Button
+				android:id="@+id/record_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:backgroundTint="?android:attr/colorAccent"
+				android:textColor="?android:textColorPrimaryInverse"
+				android:text="@string/screenrecord_start_label"
+				android:textAllCaps="false" />
+
+		</RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
