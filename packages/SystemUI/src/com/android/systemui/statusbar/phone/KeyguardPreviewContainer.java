@@ -26,7 +26,7 @@ import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
 /**
- * A view group which contains the preview of phone/camera and draws a black bar at the bottom as
+ * A view group which contains the preview of torch/camera and draws a black bar at the bottom as
  * the fake navigation bar.
  */
 public class KeyguardPreviewContainer extends FrameLayout {

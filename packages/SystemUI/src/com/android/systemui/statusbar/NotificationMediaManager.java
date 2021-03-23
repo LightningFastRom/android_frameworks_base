@@ -23,7 +23,6 @@ import static com.android.systemui.statusbar.phone.BiometricUnlockController
         .MODE_WAKE_AND_UNLOCK_PULSING;
 import static com.android.systemui.statusbar.phone.StatusBar.DEBUG_MEDIA_FAKE_ARTWORK;
 import static com.android.systemui.statusbar.phone.StatusBar.ENABLE_LOCKSCREEN_WALLPAPER;
-import static com.android.systemui.statusbar.phone.StatusBar.SHOW_LOCKSCREEN_MEDIA_ARTWORK;
 
 import android.annotation.MainThread;
 import android.annotation.Nullable;
@@ -90,12 +89,9 @@ import dagger.Lazy;
  * notification, which this class keeps track of.
  */
 @Singleton
-public class NotificationMediaManager implements Dumpable, TunerService.Tunable {
+public class NotificationMediaManager implements Dumpable {
     private static final String TAG = "NotificationMediaManager";
     public static final boolean DEBUG_MEDIA = false;
-
-    private static final String LOCKSCREEN_MEDIA_METADATA =
-            "lineagesecure:" + LineageSettings.Secure.LOCKSCREEN_MEDIA_METADATA;
 
     private final StatusBarStateController mStatusBarStateController
             = Dependency.get(StatusBarStateController.class);
@@ -145,7 +141,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
     private ImageView mBackdropBack;
 
     private boolean mShowCompactMediaSeekbar;
-    private boolean mShowMediaMetadata;
 
     private final DeviceConfig.OnPropertiesChangedListener mPropertiesChangedListener =
             new DeviceConfig.OnPropertiesChangedListener() {
@@ -226,17 +221,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         DeviceConfig.addOnPropertiesChangedListener(DeviceConfig.NAMESPACE_SYSTEMUI,
                 mContext.getMainExecutor(),
                 mPropertiesChangedListener);
-
-        final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (LOCKSCREEN_MEDIA_METADATA.equals(key)) {
-            mShowMediaMetadata = TunerService.parseIntegerSwitch(newValue, true);
-            dispatchUpdateMediaMetaData(false /* changed */, true /* allowAnimation */);
-        }
     }
 
     public static boolean isPlayingState(int state) {
@@ -468,11 +452,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
      */
     public void updateMediaMetaData(boolean metaDataChanged, boolean allowEnterAnimation) {
         Trace.beginSection("StatusBar#updateMediaMetaData");
-        if (!SHOW_LOCKSCREEN_MEDIA_ARTWORK) {
-            Trace.endSection();
-            return;
-        }
-
         if (mBackdrop == null) {
             Trace.endSection();
             return; // called too early
@@ -525,7 +504,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
     private void finishUpdateMediaMetaData(boolean metaDataChanged, boolean allowEnterAnimation,
             @Nullable Bitmap bmp) {
         Drawable artworkDrawable = null;
-        if (bmp != null && (mShowMediaMetadata || !ENABLE_LOCKSCREEN_WALLPAPER)) {
+        if (bmp != null && !ENABLE_LOCKSCREEN_WALLPAPER) {
             artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), bmp);
         }
         boolean hasMediaArtwork = artworkDrawable != null;
