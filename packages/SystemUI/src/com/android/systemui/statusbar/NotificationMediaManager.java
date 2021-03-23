@@ -174,6 +174,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 if (!isPlaybackActive(state.getState())) {
                     clearCurrentMediaNotification();
                 }
+                dispatchUpdateMediaMetaData(true /* changed */, true /* allowAnimation */);
             }
         }
 
@@ -185,6 +186,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             }
             mMediaArtworkProcessor.clearCache();
             mMediaMetadata = metadata;
+            dispatchUpdateMediaMetaData(true /* changed */, true /* allowAnimation */);
         }
     };
 
@@ -232,6 +234,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
     @Override
     public void onTuningChanged(String key, String newValue) {
         if (LOCKSCREEN_MEDIA_METADATA.equals(key)) {
+            mShowMediaMetadata = TunerService.parseIntegerSwitch(newValue, true);
+            dispatchUpdateMediaMetaData(false /* changed */, true /* allowAnimation */);
         }
     }
 
@@ -246,6 +250,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
     public void onNotificationRemoved(String key) {
         if (key.equals(mMediaNotificationKey)) {
             clearCurrentMediaNotification();
+            dispatchUpdateMediaMetaData(true /* changed */, true /* allowEnterAnimation */);
         }
     }
 
@@ -381,11 +386,23 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             mEntryManager.updateNotifications();
         }
 
+        dispatchUpdateMediaMetaData(metaDataChanged, true /* allowEnterAnimation */);
     }
 
     public void clearCurrentMediaNotification() {
         mMediaNotificationKey = null;
         clearCurrentMediaNotificationSession();
+    }
+
+    private void dispatchUpdateMediaMetaData(boolean changed, boolean allowEnterAnimation) {
+        if (mPresenter != null) {
+            mPresenter.updateMediaMetaData(changed, allowEnterAnimation);
+        }
+        @PlaybackState.State int state = getMediaControllerPlaybackState(mMediaController);
+        ArrayList<MediaListener> callbacks = new ArrayList<>(mMediaListeners);
+        for (int i = 0; i < callbacks.size(); i++) {
+            callbacks.get(i).onMetadataOrStateChanged(mMediaMetadata, state);
+        }
     }
 
     @Override
@@ -511,9 +528,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         if (bmp != null) {
             artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), bmp);
         }
-		
-		// Always Ring False;
-        boolean hasMediaArtwork = false; //artworkDrawable != null;
+        boolean hasMediaArtwork = artworkDrawable != null;
         boolean allowWhenShade = false;
         if (ENABLE_LOCKSCREEN_WALLPAPER && artworkDrawable == null) {
             Bitmap lockWallpaper =
@@ -529,11 +544,9 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
 
         ShadeController shadeController = mShadeController.get();
         StatusBarWindowController windowController = mStatusBarWindowController.get();
-		// Always Ring False;
-        boolean hideBecauseOccluded = false; //shadeController != null && shadeController.isOccluded();
+        boolean hideBecauseOccluded = shadeController != null && shadeController.isOccluded();
 
-		// Always Ring False;
-        final boolean hasArtwork = false; //mShowMediaMetadata && artworkDrawable != null;
+        final boolean hasArtwork = mShowMediaMetadata && artworkDrawable != null;
         mColorExtractor.setHasMediaArtwork(hasMediaArtwork);
         if (mScrimController != null) {
             mScrimController.setHasBackdrop(hasArtwork);
@@ -557,7 +570,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 if (windowController != null) {
                     windowController.setBackdropShowing(true);
                 }
-                metaDataChanged = false;
+                metaDataChanged = true;
                 if (DEBUG_MEDIA) {
                     Log.v(TAG, "DEBUG_MEDIA: Fading in album artwork");
                 }

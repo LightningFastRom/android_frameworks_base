@@ -2797,6 +2797,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 }
             } else if (ACTION_FAKE_ARTWORK.equals(action)) {
                 if (DEBUG_MEDIA_FAKE_ARTWORK) {
+                    mPresenter.updateMediaMetaData(true, true);
                 }
             }
         }
@@ -3252,6 +3253,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         releaseGestureWakeLock();
         runLaunchTransitionEndRunnable();
         mKeyguardMonitor.setLaunchTransitionFadingAway(false);
+        mPresenter.updateMediaMetaData(true /* metaDataChanged */, true);
     }
 
     public void addPostCollapseAction(Runnable r) {
@@ -3280,6 +3282,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 beforeFading.run();
             }
             updateScrimController();
+            mPresenter.updateMediaMetaData(false, true);
             mNotificationPanel.setAlpha(1);
             mNotificationPanel.animate()
                     .alpha(0)
@@ -3643,6 +3646,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         updateDozingState();
         checkBarModes();
         updateScrimController();
+        mPresenter.updateMediaMetaData(false, mState != StatusBarState.KEYGUARD);
         updateKeyguardState();
         Trace.endSection();
     }
