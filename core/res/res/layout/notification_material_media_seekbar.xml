@@ -46,9 +46,10 @@
             android:layout_alignTop="@id/notification_media_elapsed_time"
             android:layout_alignBottom="@id/notification_media_total_time"
             android:clickable="true"
-            android:maxHeight="3dp"
+            android:maxHeight="9dp"
             android:splitTrack="false"
-            style="@style/Widget.ProgressBar.Horizontal" />
+            style="@style/Widget.ProgressBar.Horizontal" 
+			android:progressTint="?android:attr/colorAccent" />
         <TextView
             android:id="@+id/notification_media_total_time"
             android:layout_width="wrap_content"
