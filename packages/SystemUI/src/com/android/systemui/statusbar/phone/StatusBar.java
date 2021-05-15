@@ -126,6 +126,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.DateTimeView;
 import android.widget.ImageView;
+import android.widget.FrameLayout;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.colorextraction.ColorExtractor;
@@ -1097,14 +1098,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         Drawable background;
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
         Drawable usersWallpaper = wallpaperManager.getFastDrawable();
-        if (mContext.getSystemService(ActivityManager.class).isLowRamDevice()) {
-	        background = usersWallpaper;
+		Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+		  
+		if (mContext.getSystemService(ActivityManager.class).isLowRamDevice()) {
+            background = new BitmapDrawable(mContext.getResources(), BitmapWallpaper);
         } else {
-            Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
 	        Bitmap qsPanelBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
             background = new BitmapDrawable(mContext.getResources(), qsPanelBg);
         }
-         
+        mQSBlurView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+		smQSBlurView.setAdjustViewBounds(false);
         mQSBlurView.setImageDrawable(background);
     }
 

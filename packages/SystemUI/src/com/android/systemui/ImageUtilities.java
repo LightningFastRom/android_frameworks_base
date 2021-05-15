@@ -16,26 +16,26 @@
 
 package com.android.systemui;
 
-        import android.content.Context;
-        import android.graphics.Bitmap;
-        import android.graphics.Canvas;
-        import android.graphics.Rect;
-        import android.graphics.drawable.Drawable;
-        import android.graphics.drawable.BitmapDrawable;
-        import android.renderscript.Element;
-        import android.renderscript.Allocation;
-        import android.renderscript.ScriptIntrinsicBlur;
-        import android.renderscript.RenderScript;
-        import android.util.DisplayMetrics;
-        import android.view.Display;
-        import android.view.SurfaceControl;
-        import android.view.WindowManager;
-        import android.util.Log;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.renderscript.Element;
+import android.renderscript.Allocation;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.renderscript.RenderScript;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.SurfaceControl;
+import android.view.WindowManager;
+import android.util.Log;
 
 public class ImageUtilities {
     /* blur routine */
     public static Bitmap blurImage(Context context, Bitmap inputBitmap) {
-        float BLUR_RADIUS =12f;
+        float BLUR_RADIUS = 12f;
 
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
