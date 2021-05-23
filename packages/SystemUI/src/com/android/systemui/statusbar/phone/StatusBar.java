@@ -1107,7 +1107,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             background = new BitmapDrawable(mContext.getResources(), qsPanelBg);
         }
         mQSBlurView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		smQSBlurView.setAdjustViewBounds(false);
+		mQSBlurView.setAdjustViewBounds(false);
         mQSBlurView.setImageDrawable(background);
     }
 
