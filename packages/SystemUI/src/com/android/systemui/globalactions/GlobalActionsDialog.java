@@ -1782,12 +1782,13 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
             Drawable background;
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
             Drawable usersWallpaper = wallpaperManager.getFastDrawable();
-            if (getContext().getSystemService(ActivityManager.class).isLowRamDevice()) {
-                background = usersWallpaper;
+		    Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+		  
+		    if (mContext.getSystemService(ActivityManager.class).isLowRamDevice()) {
+                background = new BitmapDrawable(mContext.getResources(), BitmapWallpaper);
             } else {
-                Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
-                Bitmap glbalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
-                background = new BitmapDrawable(mContext.getResources(), glbalActionsBg);
+	            Bitmap globalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
+                background = new BitmapDrawable(mContext.getResources(), globalActionsBg);
             }
             
             // Inflate the decor view, so the attributes below are not overwritten by the theme.
@@ -1858,7 +1859,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                                 FrameLayout.LayoutParams.MATCH_PARENT,
                                 FrameLayout.LayoutParams.MATCH_PARENT);
                 panelContainer.addView(mPanelController.getPanelContent(), panelParams);
-               //  mBackgroundDrawable = mPanelController.getBackgroundDrawable();
                 mScrimAlpha = 1f;
             }
         }
@@ -1888,18 +1888,19 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 mBackgroundDrawable = new ScrimDrawable();
                 mScrimAlpha = ScrimController.GRADIENT_SCRIM_ALPHA;
             }
-            getWindow().setBackgroundDrawable(mBackgroundDrawable);
+            //getWindow().setBackgroundDrawable(mBackgroundDrawable);
 
             // Global Actions Blur
             Drawable background;
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
             Drawable usersWallpaper = wallpaperManager.getFastDrawable();
-            if (getContext().getSystemService(ActivityManager.class).isLowRamDevice()) {
-                background = usersWallpaper;
+		    Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+		  
+		    if (mContext.getSystemService(ActivityManager.class).isLowRamDevice()) {
+                background = new BitmapDrawable(mContext.getResources(), BitmapWallpaper);
             } else {
-                Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
-                Bitmap glbalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
-                background = new BitmapDrawable(mContext.getResources(), glbalActionsBg);
+	            Bitmap globalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
+                background = new BitmapDrawable(mContext.getResources(), globalActionsBg);
             }
             getWindow().setBackgroundDrawable(background);
         }
