@@ -354,6 +354,9 @@ public class BatteryMeterView extends LinearLayout implements
         updatePercentText();
         updateBoltChargeView();
         updateBatteryMeterVisibility();
+	 if (pluggedIn) {
+            updateShowPercent();
+        }
     }
 
     @Override
