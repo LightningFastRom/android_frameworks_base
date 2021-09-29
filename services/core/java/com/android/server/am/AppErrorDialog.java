@@ -17,8 +17,6 @@
 package com.android.server.am;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import com.android.internal.util.DogbinUtils;
-import com.android.internal.util.DogbinUtils.UploadResultCallback;
 
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
@@ -242,22 +240,12 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
     }
 
     private void postToDogbinAndCopyURL() {
-        // Post to dogbin
-        DogbinUtils.upload(mPaste, new UploadResultCallback() {
-            public void onSuccess(String url) {
-                // Copy to clipboard
-                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboard.setPrimaryClip(ClipData.newPlainText("Log URL", url));
+        // Copy to clipboard
+        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText("Error Message", mPaste));
 
-                // Show toast
-                Toast.makeText(getContext(), com.android.internal.R.string.url_copy_success, Toast.LENGTH_LONG).show();
-            }
-
-            public void onFail(String message, Exception e) {
-                Toast.makeText(getContext(), com.android.internal.R.string.url_copy_failed, Toast.LENGTH_LONG).show();
-                Log.e(TAG, message, e);
-            }
-        });
+        // Show toast
+        Toast.makeText(getContext(), com.android.internal.R.string.error_copy_success, Toast.LENGTH_LONG).show();
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
