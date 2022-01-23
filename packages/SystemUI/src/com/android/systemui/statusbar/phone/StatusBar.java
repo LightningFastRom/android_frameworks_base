@@ -3216,7 +3216,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 showKeyguardImpl();
             }
         } else {
-            return hideKeyguardImpl(force);
+            return hideKeyguardImpl(true);
         }
         return false;
     }
@@ -3861,7 +3861,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mHandler.post(() -> onCameraLaunchGestureDetected(mLastCameraLaunchSource));
             }
             // When finished going to sleep, force the status bar state to avoid stale state.
-            updateIsKeyguard(true /* force */);
+            updateIsKeyguard();
         }
 
         @Override
