@@ -64,6 +64,7 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Slog;
 import android.util.StatsLog;
 import android.util.TimeUtils;
 
@@ -687,6 +688,20 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
         mHandler.post(gnssSatelliteBlacklistHelper::updateSatelliteBlacklist);
         mGnssBatchingProvider = new GnssBatchingProvider();
         mGnssGeofenceProvider = new GnssGeofenceProvider();
+
+        mContext.getContentResolver().registerContentObserver(
+                Settings.Global.getUriFor(Settings.Global.FORCE_DISABLE_SUPL),
+                false, new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                ContentResolver cr = mContext.getContentResolver();
+                String key = Settings.Global.FORCE_DISABLE_SUPL;
+                int def = Settings.Global.FORCE_DISABLE_SUPL_DEFAULT;
+
+                Slog.d(TAG, "FORCE_DISABLE_SUPL changed, value: " + Settings.Global.getInt(cr, key, def));
+                mGnssConfiguration.reloadGpsProperties();
+            }
+        });
 
         mContext.registerReceiverAsUser(new BroadcastReceiver() {
             @Override
