@@ -87,7 +87,7 @@ public class KeyguardStatusView extends GridLayout implements
         @Override
         public void onTimeChanged() {
             if (mEnableRefresh) {
-                refresh();
+                refreshTime();
             }
         }
 
@@ -110,7 +110,7 @@ public class KeyguardStatusView extends GridLayout implements
         public void onStartedWakingUp() {
             setEnableMarquee(true);
             mEnableRefresh = true;
-            refresh();
+            refreshTime();
         }
 
         @Override
